@@ -89,7 +89,8 @@ mod tests {
             let inv_factorial_table = inverse_factorial(size);
             assert_eq!(
                 c,
-                (factorial_table[n] * inv_factorial_table[r] * inv_factorial_table[n - r]).value as usize
+                (factorial_table[n] * inv_factorial_table[r] * inv_factorial_table[n - r]).value
+                    as usize
             );
         }
     }

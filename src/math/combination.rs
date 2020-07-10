@@ -1,3 +1,5 @@
+#[allow(dead_code)]
+
 /// 組み合わせ，順列を求める.  
 /// `n (n < Mod)`を対象の集合の大きさとして前処理 `O(n)`，クエリ `O(1)`.
 pub struct Combination {
@@ -88,6 +90,24 @@ mod tests {
             assert_eq!(
                 c,
                 (factorial_table[n] * inv_factorial_table[r] * inv_factorial_table[n - r]).value as usize
+            );
+        }
+    }
+
+    #[test]
+    fn test_rand_permutation() {
+        let size = 100;
+        let comb = Combination::new(size);
+        let mut rng = rand::thread_rng();
+        for _ in 0..LOOP_COUNT {
+            let n = rng.gen_range(1, size);
+            let r = rng.gen_range(0, n);
+            let c = comb.permutation(n, r);
+            let factorial_table = factorial(size);
+            let inv_factorial_table = inverse_factorial(size);
+            assert_eq!(
+                c,
+                (factorial_table[n] * inv_factorial_table[n - r]).value as usize
             );
         }
     }

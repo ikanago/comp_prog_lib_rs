@@ -1,6 +1,6 @@
 #[derive(Clone, Copy, Debug)]
 pub struct ModInt {
-    value: isize,
+    pub value: isize,
 }
 
 impl ModInt {

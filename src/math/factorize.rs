@@ -20,16 +20,7 @@ pub fn factorize(mut n: usize) -> HashMap<usize, usize> {
 mod tests {
     use crate::math::factorize;
     use std::collections::HashMap;
-
-    #[test]
-    fn test_factorize_prime() {
-        let n = 5;
-        let factors = factorize::factorize(n);
-        assert_eq!(
-            factors,
-            vec![(5, 1)].into_iter().collect::<HashMap<usize, usize>>()
-        );
-    }
+    use rand::Rng;
 
     #[test]
     fn test_factorize_square_number() {
@@ -43,15 +34,31 @@ mod tests {
         );
     }
 
+    fn is_prime(n: &usize) -> bool {
+        let mut i = 2;
+        while i * i <= *n {
+            if n % i == 0 {
+                return false;
+            }
+            i += 1;
+        }
+        return true;
+    }
+
     #[test]
-    fn test_factorize() {
-        let n = 1922375;
-        let factors = factorize::factorize(n);
-        assert_eq!(
-            factors,
-            vec![(5, 3), (7, 1), (13, 3),]
-                .into_iter()
-                .collect::<HashMap<usize, usize>>()
-        );
+    fn test_factorize_random() {
+        let range = 100000;
+        let loop_count = 100;
+        let mut rng = rand::thread_rng();
+        for _ in 0..loop_count {
+            let expected = rng.gen_range(1, range);
+            let factors = factorize::factorize(expected);
+            // Check if all factors are prime.
+            factors.keys().all(is_prime);
+            let actual = factors.iter().fold(1usize ,|acc, (factor, count)| {
+                acc * factor.pow(*count as u32)
+            });
+            assert_eq!(expected, actual);
+        }
     }
 }

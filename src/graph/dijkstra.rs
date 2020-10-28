@@ -11,10 +11,12 @@ pub struct Dijkstra {
     // i番目の要素はi番目から出る`Edge`のを集めた`Vec`をもつ.
     graph: Vec<Vec<Edge>>,
     // i番目の要素はスタート地点からi番目の節点までの最短経路.
-    pub distance: Vec<usize>,
+    distance: Vec<usize>,
 }
 
 impl Dijkstra {
+    /// Dijkstra 法で最短経路を求めるための構造体を初期化する．
+    /// `size` は節点数．
     pub fn new(size: usize) -> Self {
         Self {
             graph: vec![vec![]; size],
@@ -22,10 +24,15 @@ impl Dijkstra {
         }
     }
 
-    /// `from` から `to` へコスト `cost` の辺を張る．
+    /// `from` 番目の節点から `to` 番目の節点へコスト `cost` の辺を張る．
     /// `from` と `to` は 0-indexed でなければならない.
     pub fn add_edge(&mut self, from: usize, to: usize, cost: usize) {
         self.graph[from].push(Edge { to, cost });
+    }
+
+    /// `to` 番目の節点への距離を返す
+    pub fn distance(&self, to: usize) -> usize {
+        self.distance[to]
     }
 
     /// 最短経路を求める．
@@ -55,6 +62,14 @@ mod tests {
     use super::*;
 
     #[test]
+    fn cost_of_start_point_is_zero() {
+        let mut dijkstra = Dijkstra::new(2);
+        dijkstra.add_edge(0, 1, 1);
+        dijkstra.solve(0);
+        assert_eq!(0, dijkstra.distance(0));
+    }
+
+    #[test]
     fn shortest_path_by_dijkstra() {
         let mut dijkstra = Dijkstra::new(8);
         dijkstra.add_edge(0, 1, 1);
@@ -69,6 +84,6 @@ mod tests {
         dijkstra.add_edge(5, 7, 2);
         dijkstra.add_edge(6, 7, 5);
         dijkstra.solve(0);
-        assert_eq!(8, dijkstra.distance[7]);
+        assert_eq!(8, dijkstra.distance(7));
     }
 }

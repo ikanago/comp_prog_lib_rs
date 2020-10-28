@@ -49,3 +49,26 @@ impl Dijkstra {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn shortest_path_by_dijkstra() {
+        let mut dijkstra = Dijkstra::new(8);
+        dijkstra.add_edge(0, 1, 1);
+        dijkstra.add_edge(0, 3, 4);
+        dijkstra.add_edge(0, 4, 5);
+        dijkstra.add_edge(1, 2, 1);
+        dijkstra.add_edge(2, 5, 4);
+        dijkstra.add_edge(2, 7, 8);
+        dijkstra.add_edge(3, 6, 4);
+        dijkstra.add_edge(4, 5, 2);
+        dijkstra.add_edge(4, 6, 2);
+        dijkstra.add_edge(5, 7, 2);
+        dijkstra.add_edge(6, 7, 5);
+        dijkstra.solve(0);
+        assert_eq!(8, dijkstra.distance[7]);
+    }
+}

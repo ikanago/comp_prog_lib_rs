@@ -1,6 +1,6 @@
 #[allow(dead_code)]
 
-/// 組み合わせ，順列を求める.  
+/// 組み合わせ,順列を求める.  
 /// `n (n < Mod)`を対象の集合の大きさとして前処理 `O(n)`，クエリ `O(1)`.
 pub struct Combination {
     fac: Vec<usize>,
@@ -11,6 +11,7 @@ pub struct Combination {
 impl Combination {
     const MOD: usize = 1_000_000_007;
 
+    /// 前処理をする. `O(n)`.
     pub fn new(size: usize) -> Self {
         let mut fac = vec![0; size + 1];
         let mut inv = vec![0; size + 1];

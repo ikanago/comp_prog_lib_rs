@@ -1,5 +1,6 @@
 use std::collections::HashMap;
 
+/// 整数 `n` の素因数分解をする. `O(sqrt(n))`.
 pub fn factorize(mut n: usize) -> HashMap<usize, usize> {
     let mut result = HashMap::new();
     let mut i = 2;

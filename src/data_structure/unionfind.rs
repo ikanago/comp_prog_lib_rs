@@ -7,6 +7,7 @@ pub struct UnionFind {
 }
 
 impl UnionFind {
+    /// Union Find Tree を初期化する. `size` は要素数.
     pub fn new(size: usize) -> Self {
         Self {
             root: (0..size).collect(),
@@ -14,7 +15,7 @@ impl UnionFind {
         }
     }
 
-    // 指定した要素の根を返す(経路圧縮もする)．
+    /// 指定した要素の根を返す(経路圧縮もする)．
     pub fn root(&mut self, x: usize) -> usize {
         if self.root[x] == x {
             x
@@ -26,12 +27,12 @@ impl UnionFind {
         }
     }
 
-    // 二つの要素が同じ木にあるかを返す．
+    /// 二つの要素が同じ木にあるかを返す．
     pub fn same(&mut self, x: usize, y: usize) -> bool {
         self.root(x) == self.root(y)
     }
 
-    // 二つの要素が含まれる木を併合する．
+    /// 二つの要素が含まれる木を併合する．
     pub fn unite(&mut self, x: usize, y: usize) -> bool {
         let mut x_root = self.root(x);
         let mut y_root = self.root(y);
@@ -46,7 +47,7 @@ impl UnionFind {
         true
     }
 
-    // 指定した要素が属する木の大きさを返す．
+    /// 指定した要素が属する木の大きさを返す．
     pub fn size(&self, x: usize) -> usize {
         self.size[x]
     }

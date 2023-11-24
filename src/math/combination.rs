@@ -54,8 +54,7 @@ impl Combination {
 mod tests {
     use crate::math::combination::Combination;
     use crate::math::modint::ModInt;
-    use rand::Rng;
-    const LOOP_COUNT: usize = 10000;
+    use proptest::strategy::{Just, Strategy};
 
     fn factorial(size: usize) -> Vec<ModInt> {
         let mut result = vec![ModInt::new(0); size + 1];
@@ -77,14 +76,11 @@ mod tests {
         result
     }
 
-    #[test]
-    fn test_rand_combination() {
-        let size = 100;
-        let comb = Combination::new(size);
-        let mut rng = rand::thread_rng();
-        for _ in 0..LOOP_COUNT {
-            let n = rng.gen_range(1, size);
-            let r = rng.gen_range(0, n);
+    proptest::proptest! {
+        #[test]
+        fn test_rand_combination((n, r) in (1..100usize).prop_flat_map(|n| (Just(n), 0..n))) {
+            let size = 100;
+            let comb = Combination::new(size);
             let c = comb.combination(n, r);
             let factorial_table = factorial(size);
             let inv_factorial_table = inverse_factorial(size);
@@ -96,14 +92,11 @@ mod tests {
         }
     }
 
-    #[test]
-    fn test_rand_permutation() {
-        let size = 100;
-        let comb = Combination::new(size);
-        let mut rng = rand::thread_rng();
-        for _ in 0..LOOP_COUNT {
-            let n = rng.gen_range(1, size);
-            let r = rng.gen_range(0, n);
+    proptest::proptest! {
+        #[test]
+        fn test_rand_permutation((n, r) in (1..100usize).prop_flat_map(|n| (Just(n), 0..n))) {
+            let size = 100;
+            let comb = Combination::new(size);
             let c = comb.permutation(n, r);
             let factorial_table = factorial(size);
             let inv_factorial_table = inverse_factorial(size);

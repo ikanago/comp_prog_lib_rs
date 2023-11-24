@@ -106,135 +106,94 @@ impl std::cmp::Ord for ModInt {
 #[cfg(test)]
 mod tests {
     use crate::math::modint::ModInt;
-    use rand::Rng;
     const MOD: isize = 1_000_000_007;
-    const LOOP_COUNT: usize = 10000;
 
-    #[test]
-    fn test_random_add() {
-        let mut rng = rand::thread_rng();
-        for _ in 0..LOOP_COUNT {
-            let ra = rng.gen_range(1, MOD);
-            let rb = rng.gen_range(1, MOD);
-            let ma = ModInt::new(ra);
-            let mb = ModInt::new(rb);
-            assert_eq!((ma + mb).value, (ra + rb) % MOD);
+    proptest::proptest! {
+        #[test]
+        fn test_random_add(a in 1..MOD, b in 1..MOD) {
+            let ma = ModInt::new(a);
+            let mb = ModInt::new(b);
+            assert_eq!((ma + mb).value, (a + b) % MOD);
         }
     }
 
-    #[test]
-    fn test_random_add_assign() {
-        let mut rng = rand::thread_rng();
-        let mut m = ModInt::new(0);
-        let mut a = 0;
-        for _ in 0..LOOP_COUNT {
-            let r = rng.gen_range(1, MOD);
-            m += ModInt::new(r);
-            a += r;
-            a %= MOD;
-            assert_eq!(m.value, a);
+    proptest::proptest! {
+        #[test]
+        fn test_random_add_assign(a in 1..MOD, b in 1..MOD) {
+            let mut m = ModInt::new(a);
+            m += ModInt::new(b);
+            assert_eq!(m.value, (a + b) % MOD);
         }
     }
 
-    #[test]
-    fn test_random_sub() {
-        let mut rng = rand::thread_rng();
-        for _ in 0..LOOP_COUNT {
-            let ra = rng.gen_range(1, MOD);
-            let rb = rng.gen_range(1, MOD);
-            let ma = ModInt::new(ra);
-            let mb = ModInt::new(rb);
-            assert_eq!((ma - mb).value, ((ra - rb) % MOD + MOD) % MOD);
+    proptest::proptest! {
+        #[test]
+        fn test_random_sub(a in 1..MOD, b in 1..MOD) {
+            let ma = ModInt::new(a);
+            let mb = ModInt::new(b);
+            assert_eq!((ma - mb).value, ((a - b) % MOD + MOD) % MOD);
         }
     }
 
-    #[test]
-    fn test_random_sub_assign() {
-        let mut rng = rand::thread_rng();
-        let mut m = ModInt::new(0);
-        let mut a = 0;
-        for _ in 0..LOOP_COUNT {
-            let r = rng.gen_range(1, MOD);
-            m -= ModInt::new(r);
-            a -= r;
-            a = ((a % MOD) + MOD) % MOD;
-            assert_eq!(m.value, a);
+    proptest::proptest! {
+        #[test]
+        fn test_random_sub_assign(a in 1..MOD, b in 1..MOD) {
+            let mut m = ModInt::new(a);
+            m -= ModInt::new(b);
+            assert_eq!(m.value, ((a - b) % MOD + MOD) % MOD);
         }
     }
 
-    #[test]
-    fn test_random_mul() {
-        let mut rng = rand::thread_rng();
-        for _ in 0..LOOP_COUNT {
-            let ra = rng.gen_range(1, 10000);
-            let rb = rng.gen_range(1, 10000);
-            let ma = ModInt::new(ra);
-            let mb = ModInt::new(rb);
-            assert_eq!((ma * mb).value, (ra * rb) % MOD);
+    proptest::proptest! {
+        #[test]
+        fn test_random_mul(a in 1..10000isize, b in 1..10000isize) {
+            let ma = ModInt::new(a);
+            let mb = ModInt::new(b);
+            assert_eq!((ma * mb).value, a * b % MOD);
         }
     }
 
-    #[test]
-    fn test_random_mul_assign() {
-        let mut rng = rand::thread_rng();
-        let mut m = ModInt::new(0);
-        let mut a = 0;
-        for _ in 0..LOOP_COUNT {
-            let r = rng.gen_range(1, 10000);
-            m *= ModInt::new(r);
-            a *= r;
-            a %= MOD;
-            assert_eq!(m.value, a);
+    proptest::proptest! {
+        #[test]
+        fn test_random_mul_assign(a in 1..10000isize, b in 1..10000isize) {
+            let mut m = ModInt::new(a);
+            m *= ModInt::new(b);
+            assert_eq!(m.value, a * b % MOD);
         }
     }
 
+    proptest::proptest! {
     #[test]
-    fn test_random_inv() {
-        let mut rng = rand::thread_rng();
-        for _ in 0..LOOP_COUNT {
-            let r = rng.gen_range(1, 1000);
+        fn test_random_inv(r in 1..1000isize) {
             let m = ModInt::new(r);
             assert_eq!(r * m.inv().value % MOD, 1);
         }
     }
 
-    #[test]
-    fn test_random_div() {
-        let mut rng = rand::thread_rng();
-        for _ in 0..LOOP_COUNT {
-            let ra = rng.gen_range(1, MOD);
-            let rb = rng.gen_range(1, MOD);
-            let ma = ModInt::new(ra);
-            let mb = ModInt::new(rb);
-            let m = ma / mb;
-            assert_eq!(ma, m * mb);
+    proptest::proptest! {
+        #[test]
+        fn test_random_div(a in 1..MOD, b in 1..MOD) {
+            let ma = ModInt::new(a);
+            let mb = ModInt::new(b);
+            assert_eq!((ma / mb).value, a * mb.inv().value % MOD);
         }
     }
 
-    #[test]
-    fn test_random_div_assign() {
-        let mut rng = rand::thread_rng();
-        let mut m = ModInt::new(0);
-        let mut a = 0;
-        for _ in 0..LOOP_COUNT {
-            let r = rng.gen_range(1, MOD);
-            let inv = m.inv();
-            m /= ModInt::new(r);
-            a *= inv.value;
-            a %= MOD;
-            assert_eq!(m.value, a);
+    proptest::proptest! {
+        #[test]
+        fn test_random_div_assign(a in 1..MOD, b in 1..MOD) {
+            let mut m = ModInt::new(a);
+            m /= ModInt::new(b);
+            assert_eq!(m.value, a * ModInt::new(b).inv().value % MOD);
         }
     }
 
-    #[test]
-    fn test_random_ord() {
-        let mut rng = rand::thread_rng();
-        for _ in 0..LOOP_COUNT {
-            let ra = rng.gen_range(1, MOD);
-            let rb = rng.gen_range(1, MOD);
-            let ma = ModInt::new(ra);
-            let mb = ModInt::new(rb);
-            assert_eq!(ma < mb, ra < rb);
+    proptest::proptest! {
+        #[test]
+        fn test_random_ord(a in 1..MOD, b in 1..MOD) {
+            let ma = ModInt::new(a);
+            let mb = ModInt::new(b);
+            assert_eq!(ma < mb, a < b);
         }
     }
 }

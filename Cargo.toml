@@ -6,7 +6,7 @@ edition = "2021"
 
 [dependencies]
 num = "0.4.2"
-proconio = "0.5.0"
+proconio = "0.6.0"
 rand = "0.10.0"
 
 [dev-dependencies]
